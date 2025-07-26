@@ -56,7 +56,7 @@ const Signup = () => {
     useSignupMutation.mutate({ user: updatedUser, enteredOtp: otp }, {
       onSuccess: () => {
         setShowOtpModal(false)
-        navigate('/home', { replace: true })
+        navigate('/login')
       }, onError: (err) => {
         toast(err.message)
         // setShowOtpModal(true)
