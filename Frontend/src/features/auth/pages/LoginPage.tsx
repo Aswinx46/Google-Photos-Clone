@@ -1,30 +1,32 @@
 import { motion } from "framer-motion";
 import LoginForm from "../component/LoginForm";
 import React from "react";
+import { useUserLogin } from "../hooks/userAuthenticationHooks";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "@/reduxstrore/slices/userSlice";
+import { addToken } from "@/reduxstrore/slices/tokenSlice";
+import type { LoginFormValues } from "../interfaces/loginFormAndPageInterfaces";
 
-interface LoginValues {
-    email: string;
-    password: string;
-}
+
 
 const Login: React.FC = () => {
-    const [isLoading, setIsLoading] = React.useState(false);
-
-    const handleLogin = async (values: LoginValues) => {
-        setIsLoading(true);
-
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        console.log("Login attempt:", values);
-        setIsLoading(false);
-
-        // For demo purposes - you would handle actual authentication here
-        if (values.email === "demo@example.com" && values.password === "password") {
-            console.log("Login successful!");
-        } else {
-            throw new Error("Invalid credentials");
-        }
+    const userLoginMutation = useUserLogin()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const handleLogin = async (values: LoginFormValues) => {
+        userLoginMutation.mutate({ email: values.email, password: values.password }, {
+            onSuccess: (data) => {
+                dispatch(addUser(data.user))
+                dispatch(addToken(data.accessToken))
+                toast("Login SuccessFull")
+                navigate('/home', { replace: true })
+            },
+            onError: (err) => {
+                toast(err.message)
+            }
+        })
     };
 
     return (
@@ -69,24 +71,10 @@ const Login: React.FC = () => {
 
                 {/* Login Form */}
                 <div className="relative z-10">
-                    <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
+                    <LoginForm onSubmit={handleLogin} isLoading={userLoginMutation.isPending} />
                 </div>
 
-                {/* Demo credentials */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
-                    className="mt-6 p-4 bg-muted/50 rounded-lg border border-border/50 relative z-10"
-                >
-                    <p className="text-sm text-muted-foreground text-center mb-2 font-medium">
-                        Demo Credentials:
-                    </p>
-                    <div className="text-xs text-muted-foreground text-center space-y-1">
-                        <p>Email: demo@example.com</p>
-                        <p>Password: password</p>
-                    </div>
-                </motion.div>
+              
             </motion.div>
         </div>
     );

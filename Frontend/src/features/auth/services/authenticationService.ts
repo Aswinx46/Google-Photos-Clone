@@ -9,3 +9,8 @@ export const userSignup = async (user: Omit<SignupFormValues, 'confirmPassword'>
     const response = await axios.post('/signup', { user, enteredOtp })
     return response.data
 }
+
+export const userLogin = async (email: string, password: string) => {
+    const response = await axios.post('/login', { email, password })
+    return response.data
+}

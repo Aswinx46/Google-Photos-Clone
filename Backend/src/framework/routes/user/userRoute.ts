@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedSendOtpController, injectedSignupController } from "../../DI/userDI";
+import { injectedSendOtpController, injectedSignupController, injectedUserLoginController } from "../../DI/userDI";
 
 export class UserRoute {
     public userRoute: Router
@@ -13,6 +13,9 @@ export class UserRoute {
         })
         this.userRoute.post('/signup', (req: Request, res: Response) => {
             injectedSignupController.handleUserCreation(req, res)
+        })
+        this.userRoute.post('/login', (req: Request, res: Response) => {
+            injectedUserLoginController.handleUserLogin(req, res)
         })
     }
 }

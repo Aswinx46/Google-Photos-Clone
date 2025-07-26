@@ -13,20 +13,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { toast } from "sonner";
 
-
-interface LoginFormValues {
-    email: string;
-    password: string;
-}
-
+import type { LoginFormValues } from "../interfaces/loginFormAndPageInterfaces";
 interface LoginFormProps {
     onSubmit: (values: LoginFormValues) => Promise<void>;
     isLoading?: boolean;
 }
 
-// ✅ Yup validation schema
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
         .email("Invalid email address")
@@ -40,17 +33,6 @@ const LoginSchema = Yup.object().shape({
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading = false }) => {
     const [showPassword, setShowPassword] = React.useState(false);
-
-
-    const handleSubmit = async (values: LoginFormValues) => {
-        try {
-            await onSubmit(values);
-            toast('done')
-        } catch (error) {
-            console.log(error)
-            toast('sa')
-        }
-    };
 
     return (
         <motion.div
@@ -76,7 +58,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading = false }) =>
                     <Formik
                         initialValues={{ email: "", password: "" }}
                         validationSchema={LoginSchema}
-                        onSubmit={handleSubmit}
+                        onSubmit={onSubmit}
                     >
                         {({ errors, touched, isSubmitting }) => (
                             <Form className="space-y-4">

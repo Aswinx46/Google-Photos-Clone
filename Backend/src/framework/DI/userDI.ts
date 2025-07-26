@@ -1,10 +1,13 @@
+import { UserLoginController } from "../../adapters/controllers/authentication/login/userLoginController";
 import { SendOtpController } from "../../adapters/controllers/authentication/signup/sendOtpController";
 import { SignupController } from "../../adapters/controllers/authentication/signup/SignupController";
 import { UserRepository } from "../../adapters/repository/userRepository/userRepository";
 import { SendOtpUseCase } from "../../useCases/userAuthentication/sendOtpUseCase";
 import { SignupUseCase } from "../../useCases/userAuthentication/signupUserUseCase";
+import { UserLoginUseCase } from "../../useCases/userAuthentication/userLoginUseCase";
 import { EmailService } from "../services/emailService";
 import { HashPassword } from "../services/hashPassword";
+import { JwtService } from "../services/jwtService";
 import { OtpService } from "../services/otpService";
 
 //-------------------------------------sendOtp User ---------------------------------
@@ -18,3 +21,9 @@ export const injectedSendOtpController = new SendOtpController(sendOtpUseCase)
 const hashPassword = new HashPassword()
 const signupUseCase = new SignupUseCase(userRepository, hashPassword)
 export const injectedSignupController = new SignupController(sendOtpUseCase, signupUseCase)
+
+
+//------------------------------------- User Login ---------------------------------
+const jwtService = new JwtService()
+const userLoginUseCase = new UserLoginUseCase(userRepository, jwtService, hashPassword)
+export const injectedUserLoginController = new UserLoginController(userLoginUseCase)
