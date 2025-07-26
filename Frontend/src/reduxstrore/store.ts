@@ -8,7 +8,7 @@ import TokenSlice from './slices/tokenSlice'
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['TokenSlice']
+    blacklist: ['token']
 }
 
 const rootReducer = combineReducers({

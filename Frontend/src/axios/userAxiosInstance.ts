@@ -34,8 +34,8 @@ instance.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true
             try {
-                const refreshResponse = await instance.post<{ newAccessToken: string }>('/refrehToken')
-                console.log('this is the refreshResponse', refreshResponse)
+                const refreshResponse = await instance.post<{ newAccessToken: string }>('/refreshToken')
+                // console.log('this is the refreshResponse', refreshResponse)
                 const newAccessToken = refreshResponse.data.newAccessToken
                 store.dispatch(addToken(newAccessToken))
                 originalRequest.headers = {
