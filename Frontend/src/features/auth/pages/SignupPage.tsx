@@ -3,13 +3,35 @@ import SignupForm from '../component/SignupForm';
 import { useState } from 'react';
 import type { SignupFormValues } from '../interfaces/signupFormInterfaces';
 import OTPModal from '../component/OtpModal';
+import { useUserSendOtp, useUserSignup } from '../hooks/userAuthenticationHooks';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 
 const Signup = () => {
 
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false)
   const [user, setUser] = useState<SignupFormValues | null>(null)
-
+  const useSendOtpMutation = useUserSendOtp()
+  const useSignupMutation = useUserSignup()
+  const navigate = useNavigate()
+  const handleSubmit = async (values: SignupFormValues) => {
+    try {
+      useSendOtpMutation.mutate(values.email, {
+        onSuccess: () => {
+          setShowOtpModal(true)
+          setUser(values)
+        },
+        onError: (err) => {
+          console.log('this is the error', err)
+          toast(err.message)
+        }
+      })
+    } catch (error) {
+      toast('error while submiitng')
+      console.log(error)
+    }
+  };
   const pageVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -25,7 +47,21 @@ const Signup = () => {
   }
 
   const handleVerifyOtp = async (otp: string) => {
-    console.log('otp', otp)
+    if (!user) return
+    const updatedUser = {
+      name: user.name,
+      email: user.email,
+      password: user?.password
+    }
+    useSignupMutation.mutate({ user: updatedUser, enteredOtp: otp }, {
+      onSuccess: () => {
+        setShowOtpModal(false)
+        navigate('/home', { replace: true })
+      }, onError: (err) => {
+        toast(err.message)
+        // setShowOtpModal(true)
+      }
+    })
   }
 
   return (
@@ -101,7 +137,7 @@ const Signup = () => {
           </p>
         </motion.div>
 
-        <SignupForm setUser={setUser} setShowOtpModal={setShowOtpModal} />
+        <SignupForm onSubmit={handleSubmit} isPending={useSendOtpMutation.isPending} />
         {user && showOtpModal && <OTPModal isOpen={showOtpModal} onClose={() => setShowOtpModal(false)} onResendOTP={handleResendOtp} onVerifyOTP={handleVerifyOtp} />}
         <motion.div
           initial={{ opacity: 0 }}

@@ -1,4 +1,4 @@
-import type React from "react";
+
 
 export interface SignupFormValues {
     name: string;
@@ -10,6 +10,7 @@ export interface SignupFormValues {
 
 
 export interface SignupFormProps {
-    setUser: React.Dispatch<React.SetStateAction<SignupFormValues | null>>,
-    setShowOtpModal: React.Dispatch<React.SetStateAction<boolean>>
+
+    isPending: boolean
+    onSubmit: (values: SignupFormValues) => Promise<void>
 }

@@ -22,6 +22,7 @@ export default function OTPModal({
     const [otp, setOtp] = useState<string[]>(new Array(otpLength).fill(""))
     const [isVerifying, setIsVerifying] = useState(false)
     const [isResending, setIsResending] = useState(false)
+    const [remainingTime, setRemainingTime] = useState<number>(5 * 60)
     const [resendTimer, setResendTimer] = useState(0)
     const [error, setError] = useState("")
     const inputRefs = useRef<(HTMLInputElement | null)[]>([])
@@ -29,10 +30,17 @@ export default function OTPModal({
 
     useEffect(() => {
         if (resendTimer > 0) {
-            const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000)
+            const timer = setTimeout(() => setResendTimer((prev) => prev - 1), 1000)
             return () => clearTimeout(timer)
         }
-    }, [resendTimer])
+    }, [resendTimer, remainingTime])
+
+    useEffect(() => {
+        if (remainingTime > 0) {
+            const timer = setTimeout(() => setRemainingTime((prev) => prev - 1), 1000)
+            return () => clearTimeout(timer)
+        }
+    }, [remainingTime])
 
     // Reset state when modal opens
     useEffect(() => {
@@ -94,9 +102,11 @@ export default function OTPModal({
 
         try {
             await onVerifyOTP(otpString)
-            onClose()
+            // console.log('after')
+            // onClose()
         } catch (err) {
             setError("Invalid verification code. Please try again.")
+            console.log(err)
         } finally {
             setIsVerifying(false)
         }
@@ -112,13 +122,14 @@ export default function OTPModal({
             setOtp(new Array(otpLength).fill(""))
         } catch (err) {
             setError("Failed to resend code. Please try again.")
+            console.log(err)
         } finally {
             setIsResending(false)
         }
     }
 
     const isComplete = otp.every((digit) => digit !== "")
-    
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -196,6 +207,9 @@ export default function OTPModal({
                                 </motion.div>
                             ))}
                         </motion.div>
+                        <motion.div className="flex justify-center mb-4">
+                            <p className="text-black">{`Remaining Time ${Math.floor(remainingTime / 60)}:${remainingTime % 60}`}</p>
+                        </motion.div>
 
                         {/* Error Message */}
                         <AnimatePresence>
@@ -220,7 +234,7 @@ export default function OTPModal({
                         >
                             <Button
                                 onClick={handleVerify}
-                                disabled={!isComplete || isVerifying}
+                                disabled={!isComplete || isVerifying || remainingTime <= 0}
                                 className="w-full h-12 text-base font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
                                 {isVerifying ? (

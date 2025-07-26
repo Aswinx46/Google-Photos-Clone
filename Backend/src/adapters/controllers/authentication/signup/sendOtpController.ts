@@ -8,7 +8,7 @@ export class SendOtpController {
         try {
             const email = req.body.email?.trim();
             if (!email || !email.includes("@")) {
-                res.status(HttpStatus.BAD_REQUEST).json({ message: "Missing user data or email" });
+                res.status(HttpStatus.BAD_REQUEST).json({ error: "Missing user data or email" });
                 return;
             }
             await this.sendOtpUseCase.execute(email)

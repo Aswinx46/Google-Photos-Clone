@@ -7,10 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import { useUserSendOtp } from '../hooks/userAuthenticationHooks';
 import type { SignupFormProps, SignupFormValues } from '../interfaces/signupFormInterfaces';
-
 const validationSchema = Yup.object({
     name: Yup.string()
         .min(2, 'Name must be at least 2 characters')
@@ -29,11 +26,10 @@ const validationSchema = Yup.object({
         .required('Please confirm your password'),
 });
 
-const SignupForm = ({ setUser, setShowOtpModal }: SignupFormProps) => {
+const SignupForm = ({ onSubmit, isPending }: SignupFormProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const useSendOtpMutation = useUserSendOtp()
-
+    
     const initialValues: SignupFormValues = {
         name: '',
         email: '',
@@ -41,19 +37,7 @@ const SignupForm = ({ setUser, setShowOtpModal }: SignupFormProps) => {
         confirmPassword: '',
     };
 
-    const handleSubmit = async (values: SignupFormValues) => {
-        try {
-            useSendOtpMutation.mutate(values.email, {
-                onSuccess: () => {
-                    setShowOtpModal(true)
-                    setUser(values)
-                }
-            })
-        } catch (error) {
-            toast('error while submiitng')
-            console.log(error)
-        }
-    };
+
 
     const containerVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -99,7 +83,7 @@ const SignupForm = ({ setUser, setShowOtpModal }: SignupFormProps) => {
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
+                        onSubmit={onSubmit}
                     >
                         {({ errors, touched, isSubmitting }) => (
                             <Form className="space-y-4">
@@ -163,7 +147,7 @@ const SignupForm = ({ setUser, setShowOtpModal }: SignupFormProps) => {
 
                                 <motion.div variants={itemVariants} className="space-y-2">
                                     <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                                        Password (Optional)
+                                        Password
                                     </Label>
                                     <div className="relative">
                                         <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -247,7 +231,7 @@ const SignupForm = ({ setUser, setShowOtpModal }: SignupFormProps) => {
                                         disabled={isSubmitting}
                                         className="w-full h-11 text-base font-medium"
                                     >
-                                        {useSendOtpMutation.isPending ? (
+                                        {isPending ? (
                                             <motion.div
                                                 animate={{ rotate: 360 }}
                                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}

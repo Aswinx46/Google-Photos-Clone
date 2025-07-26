@@ -54,7 +54,7 @@ instance.interceptors.response.use(
         }
         return Promise.reject({
             status: error.response?.status,
-            message: error instanceof AxiosError ? error.response?.data.error : 'Something went wrong',
+            message: error.response?.data.error,
             data: error.response?.data || null,
             original: error
         })
