@@ -20,7 +20,8 @@ export const userSchema = new Schema<UserEntity>({
     },
     theme: {
         type: String,
-        enum: ['dark', 'light']
+        enum: ['dark', 'light'],
+        default: 'light'
     },
     profileImage: {
         type: String,

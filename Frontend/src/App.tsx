@@ -1,15 +1,16 @@
-import { Toaster } from 'sonner'
-import './App.css'
-import Signup from './features/auth/pages/SignupPage'
 
+import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import UserRoute from './routes/user/UserRoute'
 function App() {
 
 
   return (
-    <>
-      <Toaster/>
-      <Signup/>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/*' element={<UserRoute />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

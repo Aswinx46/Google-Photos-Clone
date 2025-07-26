@@ -8,12 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
-interface SignupFormValues {
-    name: string;
-    email: string;
-    password?: string;
-    confirmPassword: string;
-}
+import { useUserSendOtp } from '../hooks/userAuthenticationHooks';
+import type { SignupFormProps, SignupFormValues } from '../interfaces/signupFormInterfaces';
 
 const validationSchema = Yup.object({
     name: Yup.string()
@@ -33,10 +29,10 @@ const validationSchema = Yup.object({
         .required('Please confirm your password'),
 });
 
-const SignupForm = () => {
+const SignupForm = ({ setUser, setShowOtpModal }: SignupFormProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    //   const { toast } = useToast();
+    const useSendOtpMutation = useUserSendOtp()
 
     const initialValues: SignupFormValues = {
         name: '',
@@ -47,10 +43,12 @@ const SignupForm = () => {
 
     const handleSubmit = async (values: SignupFormValues) => {
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            toast('Account created successfully')
-            console.log('Form submitted:', values);
+            useSendOtpMutation.mutate(values.email, {
+                onSuccess: () => {
+                    setShowOtpModal(true)
+                    setUser(values)
+                }
+            })
         } catch (error) {
             toast('error while submiitng')
             console.log(error)
@@ -249,7 +247,7 @@ const SignupForm = () => {
                                         disabled={isSubmitting}
                                         className="w-full h-11 text-base font-medium"
                                     >
-                                        {isSubmitting ? (
+                                        {useSendOtpMutation.isPending ? (
                                             <motion.div
                                                 animate={{ rotate: 360 }}
                                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}

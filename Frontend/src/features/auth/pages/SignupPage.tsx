@@ -1,7 +1,15 @@
 import { motion } from 'framer-motion';
 import SignupForm from '../component/SignupForm';
+import { useState } from 'react';
+import type { SignupFormValues } from '../interfaces/signupFormInterfaces';
+import OTPModal from '../component/OtpModal';
+
 
 const Signup = () => {
+
+  const [showOtpModal, setShowOtpModal] = useState<boolean>(false)
+  const [user, setUser] = useState<SignupFormValues | null>(null)
+
   const pageVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -12,6 +20,14 @@ const Signup = () => {
     visible: { scale: 1, opacity: 1 },
   };
 
+  const handleResendOtp = async () => {
+
+  }
+
+  const handleVerifyOtp = async (otp: string) => {
+    console.log('otp', otp)
+  }
+
   return (
     <motion.div
       variants={pageVariants}
@@ -20,14 +36,14 @@ const Signup = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="min-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden"
     >
-      {/* Animated background elements */}
+
       <motion.div
         variants={backgroundVariants}
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/10"
       />
-      
-      {/* Floating shapes for visual interest */}
+
+
       <motion.div
         animate={{
           y: [0, -20, 0],
@@ -40,7 +56,7 @@ const Signup = () => {
         }}
         className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"
       />
-      
+
       <motion.div
         animate={{
           y: [0, 15, 0],
@@ -85,8 +101,8 @@ const Signup = () => {
           </p>
         </motion.div>
 
-        <SignupForm />
-
+        <SignupForm setUser={setUser} setShowOtpModal={setShowOtpModal} />
+        {user && showOtpModal && <OTPModal isOpen={showOtpModal} onClose={() => setShowOtpModal(false)} onResendOTP={handleResendOtp} onVerifyOTP={handleVerifyOtp} />}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
