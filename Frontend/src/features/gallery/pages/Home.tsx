@@ -95,7 +95,7 @@ function Home() {
 
 
     const handleImageUpload = (image:ImageUploadPropsInterface) => {
-
+        
     }
 
     return (
