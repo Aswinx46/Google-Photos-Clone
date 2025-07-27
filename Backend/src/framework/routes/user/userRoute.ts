@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
-import { injectedRefreshTokenController, injectedSendOtpController, injectedSignupController, injectedUserLoginController } from "../../DI/userDI";
-
+import { injectedCreateImageController, injectedRefreshTokenController, injectedSendOtpController, injectedSignupController, injectedUserLoginController } from "../../DI/userDI";
+import { injectedTokenBlacklistCheckingMiddlware, injectedTokenExpiryValidationMiddleware } from "../../DI/serviceDI";
+import { upload } from '../../../adapters/middlewares/multerMiddleware/MulterMiddleware'
 export class UserRoute {
     public userRoute: Router
     constructor() {
@@ -19,6 +20,9 @@ export class UserRoute {
         })
         this.userRoute.post('/refreshToken', (req: Request, res: Response) => {
             injectedRefreshTokenController.handleRefreshToken(req, res)
+        })
+        this.userRoute.post('/images', injectedTokenExpiryValidationMiddleware, injectedTokenBlacklistCheckingMiddlware, upload.single('file'),(req: Request, res: Response) => {
+            injectedCreateImageController.handleCreateImage(req, res)
         })
     }
 }

@@ -3,7 +3,7 @@ import { ItokenService } from "../../../domain/interface/serviceInterfaces/token
 import { HttpStatus } from "../../../framework/constants/httpStatusCode";
 
 export const tokenBlackListCheckingMiddleware = (tokenService: ItokenService) => {
-    return async (req: Request, res: Response,next:NextFunction): Promise<void> => {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const authHeader = req.headers.authorization
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Access denied. No token provided.' });

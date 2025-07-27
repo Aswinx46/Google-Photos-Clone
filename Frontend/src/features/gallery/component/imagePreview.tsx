@@ -39,6 +39,7 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
 
     const handleOnSubmit = () => {
         onSubmit(tags)
+        onClose()
     }
 
     const handleKeyPress = (e: React.KeyboardEvent) => {

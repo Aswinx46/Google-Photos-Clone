@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle } from 'lucide-react';
 import type { SignupFormProps, SignupFormValues } from '../interfaces/signupFormInterfaces';
+import { Link } from 'react-router-dom';
 const validationSchema = Yup.object({
     name: Yup.string()
         .min(2, 'Name must be at least 2 characters')
@@ -246,12 +247,12 @@ const SignupForm = ({ onSubmit, isPending }: SignupFormProps) => {
                                 <motion.div variants={itemVariants} className="text-center pt-4">
                                     <p className="text-sm text-muted-foreground">
                                         Already have an account?{' '}
-                                        <a
-                                            href="/signin"
+                                        <Link
+                                            to={"/login"}
                                             className="font-medium text-primary hover:underline transition-colors"
                                         >
                                             Sign in
-                                        </a>
+                                        </Link>
                                     </p>
                                 </motion.div>
                             </Form>

@@ -5,7 +5,8 @@ export const imageSchema = new Schema<ImageEntity>({
     album: {
         type: Schema.Types.ObjectId,
         ref: 'album',
-        default: null
+        default: null,
+        requried: false
     },
     filename: {
         type: String,
@@ -20,9 +21,19 @@ export const imageSchema = new Schema<ImageEntity>({
         required: true
     },
     location: {
-        lat: { type: Number, required: false },
-        lng: { type: Number, required: false },
-        address: { type: String, required: false }
+        type: {
+            type: String,
+            enum: ['Point'],
+            
+        },
+        coordinates: {
+            type: [Number],
+            required: false
+        },
+        address: {
+            type: String,
+            required: false
+        }
     },
     tags: {
         type: [String],
@@ -44,7 +55,13 @@ export const imageSchema = new Schema<ImageEntity>({
         type: Schema.Types.ObjectId,
         ref: "user",
         required: true
+    },
+    publicId: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true
 })
+
+imageSchema.index({ location: '2dsphere' });

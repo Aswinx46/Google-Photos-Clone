@@ -2,18 +2,19 @@ import { ObjectId } from "mongoose";
 
 export interface ImageEntity {
     _id?: ObjectId | string,
-    userId: ObjectId,
+    userId: ObjectId | string,
     filename: string,
     url: string,
+    publicId: string,
     filesize: number,
-    takenAt: Date,
+    takenAt?: Date,
     location?: {
-        lat: Number,
-        lng: Number,
-        address: String
+        type: string,
+        coordinates: [number, number];
+        address?: string,
     },
-    tags: [string],
-    album: ObjectId,
+    tags: string[],
+    album?: ObjectId,
     order: number,
     uploadDate: Date
 }

@@ -2,7 +2,10 @@ import { UserLoginController } from "../../adapters/controllers/authentication/l
 import { RefreshTokenController } from "../../adapters/controllers/authentication/refreshToken/refreshTokenController";
 import { SendOtpController } from "../../adapters/controllers/authentication/signup/sendOtpController";
 import { SignupController } from "../../adapters/controllers/authentication/signup/SignupController";
+import { CreateImageController } from "../../adapters/controllers/imageGallery/createImageController";
+import { ImageRepository } from "../../adapters/repository/imageRepository/imageRepository";
 import { UserRepository } from "../../adapters/repository/userRepository/userRepository";
+import { CreateImageUseCase } from "../../useCases/image/createImageUseCase";
 import { RefreshTokenUseCase } from "../../useCases/userAuthentication/refreshTokenUseCase";
 import { SendOtpUseCase } from "../../useCases/userAuthentication/sendOtpUseCase";
 import { SignupUseCase } from "../../useCases/userAuthentication/signupUserUseCase";
@@ -33,3 +36,8 @@ export const injectedUserLoginController = new UserLoginController(userLoginUseC
 //------------------------------------------refreshToken ----------------------------------
 const refreshTokenUseCase = new RefreshTokenUseCase(jwtService, userRepository)
 export const injectedRefreshTokenController = new RefreshTokenController(refreshTokenUseCase)
+
+//------------------------------------------Create images -----------------------------
+const imageRepository = new ImageRepository()
+const createImageUseCase = new CreateImageUseCase(imageRepository)
+export const injectedCreateImageController = new CreateImageController(createImageUseCase)

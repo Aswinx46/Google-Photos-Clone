@@ -1,6 +1,9 @@
 import { HomeLayout } from '../component/ImageLayout'
 import type { ImageEntity } from '@/types/images/ImageType'
 import type { ImageUploadPropsInterface } from '../interfaces/ImageUploadFunctionProps'
+import { useUploadImage } from '../hooks/galleryHooks'
+import { toast } from 'sonner'
+import { LoadingSpinner } from '@/components/spinner/LoadingSpinner'
 
 const mockImages: ImageEntity[] = [
     {
@@ -92,15 +95,29 @@ const mockImages: ImageEntity[] = [
     },
 ]
 function Home() {
-
-
-    const handleImageUpload = (image:ImageUploadPropsInterface) => {
-        
+    // const images
+    const uploadImage = useUploadImage()
+    const handleImageUpload = (image: ImageUploadPropsInterface) => {
+        const formData = new FormData()
+        formData.append('file', image.image)
+        formData.append('tags', JSON.stringify(image.tags))
+        uploadImage.mutate(formData, {
+            onSuccess: (data) => {
+                toast("Image Uploaded")
+                console.log('this is the response', data)
+            },
+            onError: (err) => {
+                toast(err.message)
+                console.log('error while uploading image', err)
+            }
+        })
+        // console.log(image)
     }
 
     return (
         <div>
             <HomeLayout images={mockImages} isLoading={false} onUpload={handleImageUpload} />
+            {uploadImage.isPending && <LoadingSpinner />}
         </div>
     )
 }

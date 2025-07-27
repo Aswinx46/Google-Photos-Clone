@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 
 import type { LoginFormValues } from "../interfaces/loginFormAndPageInterfaces";
+import { useNavigate } from "react-router-dom";
 interface LoginFormProps {
     onSubmit: (values: LoginFormValues) => Promise<void>;
     isLoading?: boolean;
@@ -33,7 +34,7 @@ const LoginSchema = Yup.object().shape({
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading = false }) => {
     const [showPassword, setShowPassword] = React.useState(false);
-
+    const navigate = useNavigate()
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -170,6 +171,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading = false }) =>
                                         <button
                                             type="button"
                                             className="text-primary hover:text-primary/80 font-medium transition-colors"
+                                            onClick={()=>navigate('/signup')}
                                         >
                                             Sign up
                                         </button>
