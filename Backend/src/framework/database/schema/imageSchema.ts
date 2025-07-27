@@ -59,6 +59,10 @@ export const imageSchema = new Schema<ImageEntity>({
     publicId: {
         type: String,
         required: true
+    },
+    format:{
+        type:String,
+        required:true
     }
 }, {
     timestamps: true

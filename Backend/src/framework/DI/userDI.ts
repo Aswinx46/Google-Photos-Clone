@@ -3,9 +3,11 @@ import { RefreshTokenController } from "../../adapters/controllers/authenticatio
 import { SendOtpController } from "../../adapters/controllers/authentication/signup/sendOtpController";
 import { SignupController } from "../../adapters/controllers/authentication/signup/SignupController";
 import { CreateImageController } from "../../adapters/controllers/imageGallery/createImageController";
+import { FindImagesOfUserController } from "../../adapters/controllers/imageGallery/findImagesOfUser";
 import { ImageRepository } from "../../adapters/repository/imageRepository/imageRepository";
 import { UserRepository } from "../../adapters/repository/userRepository/userRepository";
 import { CreateImageUseCase } from "../../useCases/image/createImageUseCase";
+import { FindImagesOfUser } from "../../useCases/image/findImagesOfUser";
 import { RefreshTokenUseCase } from "../../useCases/userAuthentication/refreshTokenUseCase";
 import { SendOtpUseCase } from "../../useCases/userAuthentication/sendOtpUseCase";
 import { SignupUseCase } from "../../useCases/userAuthentication/signupUserUseCase";
@@ -41,3 +43,7 @@ export const injectedRefreshTokenController = new RefreshTokenController(refresh
 const imageRepository = new ImageRepository()
 const createImageUseCase = new CreateImageUseCase(imageRepository)
 export const injectedCreateImageController = new CreateImageController(createImageUseCase)
+
+//---------------------------------------------find images ------------------------
+const findImagesOfUser = new FindImagesOfUser(imageRepository)
+export const injectedFindImagesOfUserController = new FindImagesOfUserController(findImagesOfUser)

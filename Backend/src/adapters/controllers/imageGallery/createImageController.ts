@@ -15,7 +15,6 @@ export class CreateImageController {
                 res.status(HttpStatus.BAD_REQUEST).json({ message: "No image file provided" })
                 return
             }
-            console.log('this is the file', file, tags)
             const imageData: ImageBufferType = {
                 imageBuffer: file.buffer,
                 fileName: file.originalname,

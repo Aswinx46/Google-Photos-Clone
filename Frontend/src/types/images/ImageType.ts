@@ -12,6 +12,7 @@ export interface ImageEntity {
         lng: number
         address: string
     }
+    format:string
     tags: string[]
     album: string
     order: number

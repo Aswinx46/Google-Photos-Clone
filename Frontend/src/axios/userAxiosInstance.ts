@@ -1,6 +1,7 @@
 import axios, { AxiosError, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios'
 import { store } from '../reduxstrore/store'
-import { addToken } from '@/reduxstrore/slices/tokenSlice'
+import { addToken, removeToken } from '@/reduxstrore/slices/tokenSlice'
+import { removeUser } from '@/reduxstrore/slices/userSlice'
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true
@@ -31,6 +32,14 @@ instance.interceptors.response.use(
     response => response,
     async (error: AxiosError<APIErrorResponse>) => {
         const originalRequest = error.config as CustomAxiosRequestConfig
+
+        if (error.response?.status === 403) {
+            store.dispatch(removeUser(null))
+            store.dispatch(removeToken(null))
+            window.location.href = '/login'
+            return Promise.reject(error)
+        }
+
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true
             try {

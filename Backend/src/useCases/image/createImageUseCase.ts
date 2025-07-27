@@ -9,7 +9,7 @@ import { ImageDTO } from "../../domain/entity/image/imageDTO";
 export class CreateImageUseCase implements IcreateImageUseCase {
     constructor(private imageRepository: IimageRepository) { }
     async createImage(image: ImageBufferType, tags: string[], userId: string, location?: ImageEntity['location']): Promise<ImageDTO> {
-        const { publicId, secureUrl } = await uploadImageToCloudinary(image)
+        const { publicId, secureUrl, format } = await uploadImageToCloudinary(image)
         const imageCreation: ImageEntity = {
             userId,
             filename: image.fileName,
@@ -18,6 +18,7 @@ export class CreateImageUseCase implements IcreateImageUseCase {
             publicId,
             order: 0,
             tags,
+            format,
             uploadDate: new Date(),
 
         }
@@ -32,8 +33,10 @@ export class CreateImageUseCase implements IcreateImageUseCase {
         const createdImage = await this.imageRepository.createImage(imageCreation)
         if (!createdImage) throw new Error("Error while creating image")
         const mappedImage = ImageMapper.toDTO(createdImage)
-        const signedUrl = await generateSignedImageUrl(createdImage.publicId)
-        mappedImage.url = signedUrl
+        if (createdImage.format !== 'jpg') {
+            const signedUrl = await generateSignedImageUrl(createdImage.publicId)
+            mappedImage.url = signedUrl
+        }
         return mappedImage
     }
 }

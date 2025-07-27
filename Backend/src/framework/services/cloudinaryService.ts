@@ -10,7 +10,8 @@ cloudinary.config({
 
 export const uploadImageToCloudinary = (input: ImageBufferType): Promise<{
     publicId: string,
-    secureUrl: string
+    secureUrl: string,
+    format: string
 }> => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
@@ -22,9 +23,11 @@ export const uploadImageToCloudinary = (input: ImageBufferType): Promise<{
             (error, result) => {
                 if (error) reject(error)
                 if (!result?.public_id) return reject(new Error('Upload Failed, no URL Returned'))
+                console.log(result)
                 resolve({
                     publicId: result.public_id,
-                    secureUrl: result.secure_url
+                    secureUrl: result.secure_url,
+                    format: result.format
                 })
             }
         );
@@ -44,6 +47,7 @@ export const generateSignedImageUrl = (publicId: string): string => {
         resource_type: 'image',
         sign_url: true,
         secure: true,
-        expires_at: Math.floor(Date.now() / 1000) + 60 * 5,
+        expires_at: Math.floor(Date.now() / 1000) + 60 * 55,
+        
     })
 }

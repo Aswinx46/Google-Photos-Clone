@@ -13,6 +13,7 @@ export interface ImageEntity {
         coordinates: [number, number];
         address?: string,
     },
+    format:string
     tags: string[],
     album?: ObjectId,
     order: number,

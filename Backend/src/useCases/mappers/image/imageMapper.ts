@@ -10,6 +10,7 @@ export class ImageMapper {
             tags: image.tags,
             uploadDate: image.uploadDate,
             url: image.url,
+            format:image.format,
             userId: image.userId,
             _id: image._id,
             album: image.album,

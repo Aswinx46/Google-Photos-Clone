@@ -8,3 +8,9 @@ export const createImage = async (formData: FormData): Promise<void> => {
     })
     return response.data
 }
+
+export const findImages = async ({ pageParam = 1 }) => {
+    const limit = import.meta.env.VITE_PAGE_LIMIT
+    const response = await axios.get('/images', { params: { page: pageParam, limit } })
+    return response.data
+}

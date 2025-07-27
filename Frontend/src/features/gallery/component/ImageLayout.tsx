@@ -1,25 +1,27 @@
 
-import React, { useState, useMemo, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import React, { useState, useRef } from "react"
+import { motion } from "framer-motion"
 import type { ImageEntity } from "@/types/images/ImageType"
 import { ImageCard } from "./ImageCard"
 import { ImageModal } from "./ImageModal"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Filter, Grid3X3, Grid2X2, List, Upload } from "lucide-react"
+import { Search, Grid3X3, Grid2X2, List, Upload } from "lucide-react"
 import { ImagePreviewModal } from "./imagePreview"
 import type { ImageUploadPropsInterface } from "../interfaces/ImageUploadFunctionProps"
 import { toast } from "sonner"
 
 interface HomeLayoutProps {
-    images: ImageEntity[]
+    images: ImageEntity[] | []
     isLoading?: boolean
     onUpload: (image: ImageUploadPropsInterface) => void
+    ref: (node?: Element | null) => void
+    isFetchingNextPage: boolean
 }
 
 type ViewMode = "grid-large" | "grid-small" | "list"
 
-export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutProps) {
+export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage }: HomeLayoutProps) {
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid-large")
@@ -28,6 +30,7 @@ export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutPr
     const [selectedFileUrl, setSelectedFileUrl] = useState<string>('')
     const [showImagePreview, setShowImagePreview] = useState<boolean>(false)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
 
     const handleImageUpload = (tags: string[]) => {
         if (!selectedFile) {
@@ -59,26 +62,26 @@ export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutPr
     }
 
     // Filter images based on search query and tags
-    const filteredImages = useMemo(() => {
-        return images.filter((image) => {
-            const matchesSearch =
-                image.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                image.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    // const filteredImages = useMemo(() => {
+    //     return images.filter((image) => {
+    //         const matchesSearch =
+    //             image.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //             image.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
 
-            const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => image.tags.includes(tag))
+    //         const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => image.tags.includes(tag))
 
-            return matchesSearch && matchesTags
-        })
-    }, [images, searchQuery, selectedTags])
+    //         return matchesSearch && matchesTags
+    //     })
+    // }, [images, searchQuery, selectedTags])
 
     // Get all unique tags
-    const allTags = useMemo(() => {
-        const tags = new Set<string>()
-        images.forEach((image) => {
-            image.tags.forEach((tag) => tags.add(tag))
-        })
-        return Array.from(tags)
-    }, [images])
+    // const allTags = useMemo(() => {
+    //     const tags = new Set<string>()
+    //     images.forEach((image) => {
+    //         image.tags.forEach((tag) => tags.add(tag))
+    //     })
+    //     return Array.from(tags)
+    // }, [images])
 
     const getGridClasses = () => {
         switch (viewMode) {
@@ -129,9 +132,9 @@ export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutPr
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                         <div>
                             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Photos</h1>
-                            <p className="text-gray-600 dark:text-gray-400 mt-1">
+                            {/* <p className="text-gray-600 dark:text-gray-400 mt-1">
                                 {filteredImages.length} of {images.length} photos
-                            </p>
+                            </p> */}
                         </div>
                         <input
                             type="file"
@@ -186,7 +189,7 @@ export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutPr
                     </div>
 
                     {/* Tags Filter */}
-                    {allTags.length > 0 && (
+                    {/* {allTags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-6">
                             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                                 <Filter className="w-4 h-4" />
@@ -206,12 +209,12 @@ export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutPr
                                 </Button>
                             ))}
                         </div>
-                    )}
+                    )} */}
                 </motion.div>
 
                 {/* Images Grid */}
-                <AnimatePresence mode="wait">
-                    {filteredImages.length === 0 ? (
+                {/* <AnimatePresence mode="wait"> */}
+                {/* {filteredImages.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -229,18 +232,23 @@ export function HomeLayout({ images, isLoading = false, onUpload }: HomeLayoutPr
                             </p>
                         </motion.div>
                     ) : (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className={`grid ${getGridClasses()}`}
-                        >
-                            {filteredImages.map((image, index) => (
-                                <ImageCard key={String(image._id)} image={image} index={index} onImageClick={setSelectedImage} />
-                            ))}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        )} */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`grid ${getGridClasses()}`}
+                >
+                    {images?.map((image, index) => (
+                        <ImageCard key={String(image._id)} image={image} index={index} onImageClick={setSelectedImage} />
+                    ))}
+                </motion.div>
+                {images.length > 0 && (
+                    <div ref={ref} style={{ height: '1px' }}>
+                        {isFetchingNextPage && <p>Loading more...</p>}
+                    </div>
+                )}
+                {/* </AnimatePresence> */}
 
                 {/* Image Modal */}
                 <ImageModal image={selectedImage} isOpen={!!selectedImage} onClose={() => setSelectedImage(null)} />

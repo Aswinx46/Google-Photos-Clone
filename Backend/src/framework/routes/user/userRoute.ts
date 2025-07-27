@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedCreateImageController, injectedRefreshTokenController, injectedSendOtpController, injectedSignupController, injectedUserLoginController } from "../../DI/userDI";
+import { injectedCreateImageController, injectedFindImagesOfUserController, injectedRefreshTokenController, injectedSendOtpController, injectedSignupController, injectedUserLoginController } from "../../DI/userDI";
 import { injectedTokenBlacklistCheckingMiddlware, injectedTokenExpiryValidationMiddleware } from "../../DI/serviceDI";
 import { upload } from '../../../adapters/middlewares/multerMiddleware/MulterMiddleware'
 export class UserRoute {
@@ -21,8 +21,10 @@ export class UserRoute {
         this.userRoute.post('/refreshToken', (req: Request, res: Response) => {
             injectedRefreshTokenController.handleRefreshToken(req, res)
         })
-        this.userRoute.post('/images', injectedTokenExpiryValidationMiddleware, injectedTokenBlacklistCheckingMiddlware, upload.single('file'),(req: Request, res: Response) => {
+        this.userRoute.route('/images').post(injectedTokenExpiryValidationMiddleware, injectedTokenBlacklistCheckingMiddlware, upload.single('file'), (req: Request, res: Response) => {
             injectedCreateImageController.handleCreateImage(req, res)
+        }).get(injectedTokenExpiryValidationMiddleware, injectedTokenBlacklistCheckingMiddlware, (req: Request, res: Response) => {
+            injectedFindImagesOfUserController.handleFindImagesOfUser(req, res)
         })
     }
 }
