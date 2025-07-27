@@ -10,6 +10,7 @@ import { Search, Grid3X3, Grid2X2, List, Upload } from "lucide-react"
 import { ImagePreviewModal } from "./imagePreview"
 import type { ImageUploadPropsInterface } from "../interfaces/ImageUploadFunctionProps"
 import { toast } from "sonner"
+import FullViewImage from "./FullViewImage"
 
 interface HomeLayoutProps {
     images: ImageEntity[] | []
@@ -30,7 +31,8 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
     const [selectedFileUrl, setSelectedFileUrl] = useState<string>('')
     const [showImagePreview, setShowImagePreview] = useState<boolean>(false)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
-
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string>('')
+    const [showFullScreen, setShowFullScreen] = useState<boolean>(false)
 
     const handleImageUpload = (tags: string[]) => {
         if (!selectedFile) {
@@ -42,6 +44,13 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
             tags
         }
         onUpload(image)
+    }
+
+    const handleFullScreen = (imageUrl: string) => {
+        console.log('skdf')
+        setSelectedImageUrl(imageUrl)
+        setShowFullScreen(true)
+        // alert()
     }
 
     const handleButtonClick = () => {
@@ -101,6 +110,8 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
                 <div className="max-w-7xl mx-auto">
                     {/* Loading Header */}
+              
+
                     <div className="mb-8">
                         <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-48 mb-4 animate-pulse" />
                         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-64 animate-pulse" />
@@ -127,6 +138,8 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className="max-w-7xl mx-auto p-6">
                 {/* Header */}
+                {showFullScreen && <FullViewImage imgUrl={selectedImageUrl} onClose={() => setShowFullScreen(false)} />}
+
                 {showImagePreview && <ImagePreviewModal imageUrl={selectedFileUrl} isOpen={showImagePreview} onClose={() => setShowImagePreview(false)} onSubmit={handleImageUpload} />}
                 <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -240,7 +253,7 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
                     className={`grid ${getGridClasses()}`}
                 >
                     {images?.map((image, index) => (
-                        <ImageCard key={String(image._id)} image={image} index={index} onImageClick={setSelectedImage} />
+                        <ImageCard key={String(image._id)} image={image} index={index} onImageClick={setSelectedImage} handleFullScreen={handleFullScreen} />
                     ))}
                 </motion.div>
                 {images.length > 0 && (
