@@ -6,5 +6,5 @@ export interface ImageBufferType {
     imageBuffer: Buffer;
     fileName: string;
     fileSize: number
-    takenAt?:string
+    takenAt?: string
 }
