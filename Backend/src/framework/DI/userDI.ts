@@ -1,4 +1,5 @@
 import { UserLoginController } from "../../adapters/controllers/authentication/login/userLoginController";
+import { UserLogoutController } from "../../adapters/controllers/authentication/logout/userLogoutController";
 import { RefreshTokenController } from "../../adapters/controllers/authentication/refreshToken/refreshTokenController";
 import { SendOtpController } from "../../adapters/controllers/authentication/signup/sendOtpController";
 import { SignupController } from "../../adapters/controllers/authentication/signup/SignupController";
@@ -18,10 +19,12 @@ import { RefreshTokenUseCase } from "../../useCases/userAuthentication/refreshTo
 import { SendOtpUseCase } from "../../useCases/userAuthentication/sendOtpUseCase";
 import { SignupUseCase } from "../../useCases/userAuthentication/signupUserUseCase";
 import { UserLoginUseCase } from "../../useCases/userAuthentication/userLoginUseCase";
+import { UserLogoutUseCase } from "../../useCases/userAuthentication/userLogoutUseCase";
 import { EmailService } from "../services/emailService";
 import { HashPassword } from "../services/hashPassword";
 import { JwtService } from "../services/jwtService";
 import { OtpService } from "../services/otpService";
+import redisService from "../services/redisService";
 
 //-------------------------------------sendOtp User ---------------------------------
 const otpService = new OtpService()
@@ -64,4 +67,8 @@ export const injectedDeleteImageController = new DeleteImageController(deleteIma
 
 //------------------------------------- findIMagesbasedOnsortingandSearch-------------------
 const findImageBasedOnSearchAndSortUseCase = new FindImagesSearchAndSort(imageRepository)
-export const injectedImageBasedOnSearchAndSort = new FindImageSearchAndSortController(findImageBasedOnSearchAndSortUseCase) 
+export const injectedImageBasedOnSearchAndSort = new FindImageSearchAndSortController(findImageBasedOnSearchAndSortUseCase)
+
+//----------------------------------------user logout use case -------------------------------
+const userLogoutUseCase = new UserLogoutUseCase(jwtService, redisService)
+export const injectedUserLogoutController = new UserLogoutController(userLogoutUseCase)

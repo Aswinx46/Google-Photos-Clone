@@ -3,15 +3,20 @@ import React, { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import type { ImageEntity } from "@/types/images/ImageType"
 import { ImageCard } from "./ImageCard"
-import  ImageModal  from "./ImageModal"
+import ImageModal from "./ImageModal"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Grid3X3, Grid2X2, List, Upload } from "lucide-react"
+import { Search, Grid3X3, Grid2X2, List, Upload, LogOut } from "lucide-react"
 import { ImagePreviewModal } from "./imagePreview"
 import type { ImageUploadPropsInterface } from "../interfaces/ImageUploadFunctionProps"
 import { toast } from "sonner"
 import FullViewImage from "./FullViewImage"
 import useDebounce from "../hooks/debouncingHook"
+import { useUserLogout } from "../hooks/galleryHooks"
+import { useDispatch } from "react-redux"
+import { removeUser } from "@/reduxstrore/slices/userSlice"
+import { removeToken } from "@/reduxstrore/slices/tokenSlice"
+import { useNavigate } from "react-router-dom"
 
 interface HomeLayoutProps {
     images: Record<string, ImageEntity[]>
@@ -26,8 +31,9 @@ interface HomeLayoutProps {
 
 type ViewMode = "grid-large" | "grid-small" | "list"
 
- function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage, setName, setSort }: HomeLayoutProps) {
+function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage, setName, setSort }: HomeLayoutProps) {
     const sortOptions = ["newest", "oldest"] as const;
+    const userLogoutMutation = useUserLogout()
     const [showSortOptions, setShowSortOptions] = useState<boolean>(false)
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
@@ -39,7 +45,8 @@ type ViewMode = "grid-large" | "grid-small" | "list"
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [selectedImageUrl, setSelectedImageUrl] = useState<string>('')
     const [showFullScreen, setShowFullScreen] = useState<boolean>(false)
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const handleImageUpload = (tags: string[]) => {
         if (!selectedFile) {
             toast("Select Atleast One image")
@@ -52,7 +59,16 @@ type ViewMode = "grid-large" | "grid-small" | "list"
         onUpload(image)
     }
 
-
+    const handleUserLogout = () => {
+        userLogoutMutation.mutate(undefined, {
+            onSuccess: () => {
+                dispatch(removeUser(null))
+                dispatch(removeToken(null))
+                toast('Logout Successfull')
+                navigate('/login', { replace: true })
+            }
+        })
+    }
 
     const handleFullScreen = (imageUrl: string) => {
         setSelectedImageUrl(imageUrl)
@@ -143,12 +159,13 @@ type ViewMode = "grid-large" | "grid-small" | "list"
                             onChange={handleFileChange}
                         />
 
-                        <Button onClick={handleButtonClick} className="flex items-center gap-2">
-                            <Upload className="w-4 h-4" />
-                            Upload Photos
+                        <Button onClick={handleUserLogout} className="flex items-center gap-2">
+                            <LogOut className="w-4 h-4" />
+                            Logout
                         </Button>
 
                     </div>
+
 
                     {/* Search and Filters */}
                     <div className="flex flex-col lg:flex-row gap-4 mb-6">
@@ -164,7 +181,10 @@ type ViewMode = "grid-large" | "grid-small" | "list"
                                 className="pl-10"
                             />
                         </div>
-
+                        <Button onClick={handleButtonClick} className="flex items-center gap-2">
+                            <Upload className="w-4 h-4" />
+                            Upload Photos
+                        </Button>
                         <div className="flex items-center gap-2">
                             <Button
                                 variant={viewMode === "grid-large" ? "default" : "outline"}

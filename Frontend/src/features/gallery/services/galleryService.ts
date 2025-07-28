@@ -24,3 +24,8 @@ export const deleteImage = async (imageId: string) => {
     const response = await axios.delete(`/images/${imageId}`)
     return response.data
 }
+
+export const userLogout = async () => {
+    const response = await axios.post('/logout')
+    return response.data
+}

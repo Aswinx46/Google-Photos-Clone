@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedCreateImageController, injectedDeleteImageController, injectedFindImagesOfUserController, injectedImageBasedOnSearchAndSort, injectedRefreshTokenController, injectedSendOtpController, injectedSignupController, injectedUpdateImageController, injectedUserLoginController } from "../../DI/userDI";
+import { injectedCreateImageController, injectedDeleteImageController, injectedFindImagesOfUserController, injectedImageBasedOnSearchAndSort, injectedRefreshTokenController, injectedSendOtpController, injectedSignupController, injectedUpdateImageController, injectedUserLoginController, injectedUserLogoutController } from "../../DI/userDI";
 import { injectedTokenBlacklistCheckingMiddlware, injectedTokenExpiryValidationMiddleware } from "../../DI/serviceDI";
 import { upload } from '../../../adapters/middlewares/multerMiddleware/MulterMiddleware'
 export class UserRoute {
@@ -31,6 +31,9 @@ export class UserRoute {
             injectedUpdateImageController.handleUpdateImage(req, res)
         }).delete(injectedTokenExpiryValidationMiddleware, injectedTokenBlacklistCheckingMiddlware, (req: Request, res: Response) => {
             injectedDeleteImageController.handleDelete(req, res)
+        })
+        this.userRoute.post('/logout', injectedTokenExpiryValidationMiddleware, injectedTokenBlacklistCheckingMiddlware, (req: Request, res: Response) => {
+            injectedUserLogoutController.handleUserLogoutUseCase(req, res)
         })
 
     }
