@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HomeLayout } from '../component/ImageLayout'
+import HomeLayout from '../component/ImageLayout'
 import type { ImageEntity } from '@/types/images/ImageType'
 import type { ImageUploadPropsInterface } from '../interfaces/ImageUploadFunctionProps'
 import { useFindImages, useUploadImage } from '../hooks/galleryHooks'
@@ -26,7 +26,6 @@ function Home() {
     // console.log('this is the data from the backend',data)
     data?.pages.forEach(page => {
         const { images } = page
-
         Object.entries(images).forEach(([groupLabel, groupImages]) => {
             if (!Array.isArray(groupImages)) return
 
@@ -58,14 +57,14 @@ function Home() {
                 console.log('error while uploading image', err)
             }
         })
-        // console.log(image)
+
     }
 
 
 
     useEffect(() => {
         const interval = setInterval(() => {
-            refetch()  // useTanstackQuery refetch to get fresh signed URLs
+            refetch()
         }, 55 * 60 * 1000) // 55 minutes
 
         return () => clearInterval(interval)

@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+
 
 import { useState } from "react"
 import { motion } from "framer-motion"
 import type { ImageEntity } from "@/types/images/ImageType"
-import { Calendar, MapPin, Tag, Fullscreen, Pen, Album, Trash } from "lucide-react"
+import { Tag, Fullscreen, Pen, Album, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ImageEditModal from "./updateImage"
 import { useDeleteImage, useUpdateImage } from "../hooks/galleryHooks"
 import { toast } from "sonner"
 import { useQueryClient } from '@tanstack/react-query'
 import ConfirmModal from "@/components/confirmModal/ConfirmModal"
-import { formatDate } from "@/lib/utils"
 import { LoadingSpinner } from "@/components/spinner/LoadingSpinner"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/reduxstrore/store"
@@ -236,7 +235,7 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
                     </div>
 
                     {/* Metadata */}
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                         <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
                             <Calendar className="w-3 h-3" />
                             <span>{formatDate(image.takenAt)}</span>
@@ -248,7 +247,7 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
                                 <span className="truncate">{String(image.location.address)}</span>
                             </div>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Tags */}
                     {

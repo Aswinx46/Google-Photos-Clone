@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import type { ImageEntity } from "@/types/images/ImageType"
 import { ImageCard } from "./ImageCard"
-import { ImageModal } from "./ImageModal"
+import  ImageModal  from "./ImageModal"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Grid3X3, Grid2X2, List, Upload } from "lucide-react"
@@ -11,6 +11,7 @@ import { ImagePreviewModal } from "./imagePreview"
 import type { ImageUploadPropsInterface } from "../interfaces/ImageUploadFunctionProps"
 import { toast } from "sonner"
 import FullViewImage from "./FullViewImage"
+import useDebounce from "../hooks/debouncingHook"
 
 interface HomeLayoutProps {
     images: Record<string, ImageEntity[]>
@@ -25,13 +26,13 @@ interface HomeLayoutProps {
 
 type ViewMode = "grid-large" | "grid-small" | "list"
 
-export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage, setName, setSort }: HomeLayoutProps) {
+ function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage, setName, setSort }: HomeLayoutProps) {
     const sortOptions = ["newest", "oldest"] as const;
     const [showSortOptions, setShowSortOptions] = useState<boolean>(false)
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid-large")
-
+    const debounceSetName = useDebounce(setName, 1000)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [selectedFileUrl, setSelectedFileUrl] = useState<string>('')
     const [showImagePreview, setShowImagePreview] = useState<boolean>(false)
@@ -50,6 +51,8 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
         }
         onUpload(image)
     }
+
+
 
     const handleFullScreen = (imageUrl: string) => {
         setSelectedImageUrl(imageUrl)
@@ -154,7 +157,10 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
                             <Input
                                 placeholder="Search photos by name or tags..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value)
+                                    debounceSetName(e.target.value)
+                                }}
                                 className="pl-10"
                             />
                         </div>
@@ -240,3 +246,5 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
         </div>
     )
 }
+
+export default React.memo(HomeLayout)

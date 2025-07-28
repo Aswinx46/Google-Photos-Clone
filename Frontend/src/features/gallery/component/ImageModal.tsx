@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import type { ImageEntity } from "@/types/images/ImageType"
 import { X, Download, Heart, Share2, MapPin, Calendar, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import React from "react"
 
 interface ImageModalProps {
   image: ImageEntity | null
@@ -11,7 +12,7 @@ interface ImageModalProps {
   onClose: () => void
 }
 
-export function ImageModal({ image, isOpen, onClose }: ImageModalProps) {
+function ImageModal({ image, isOpen, onClose }: ImageModalProps) {
   if (!image) return null
 
   const formatFileSize = (bytes: number): string => {
@@ -147,3 +148,5 @@ export function ImageModal({ image, isOpen, onClose }: ImageModalProps) {
     </AnimatePresence>
   )
 }
+
+export default React.memo(ImageModal)
