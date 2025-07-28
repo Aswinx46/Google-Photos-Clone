@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=${PORT}
+      - ORIGIN=${ORIGIN}
+      - MONGODB=${MONGODB}
+      - NODEMAILER_EMAIL=${NODEMAILER_EMAIL}
+      - NODEMAILER_PASSWORD=${NODEMAILER_PASSWORD}
+      - ACCESSTOKEN_SECRET_KEY=${ACCESSTOKEN_SECRET_KEY}
+      - REFRESHTOKEN_SECRET_KEY=${REFRESHTOKEN_SECRET_KEY}
+      - REDIS_URL=${REDIS_URL}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - CLOUDINARY_PREFIX=${CLOUDINARY_PREFIX}
+      - REDIS_PORT=6379
+    depends_on:
+       - redis
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
