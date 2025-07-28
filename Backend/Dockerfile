@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+# 💡 Fix: Increase memory limit for TypeScript build
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 RUN npm run build
 
 #Production Stage
