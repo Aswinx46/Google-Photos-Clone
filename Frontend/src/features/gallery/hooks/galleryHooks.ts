@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { createImage, findImages } from "../services/galleryService";
+import { createImage, findImages, updateImage } from "../services/galleryService";
 
 export const useUploadImage = () => {
     return useMutation({
@@ -16,5 +16,11 @@ export const useFindImages = () => {
             const fetchedSoFar = allPages.flatMap(p => p.images).length
             return fetchedSoFar < lastpage.totalCount ? allPages.length + 1 : undefined
         }
+    })
+}
+
+export const useUpdateImage = () => {
+    return useMutation({
+        mutationFn: ({ imageId, name, tags }: { imageId: string, name: string, tags: string[] }) => updateImage(imageId, name, tags)
     })
 }

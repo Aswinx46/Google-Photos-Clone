@@ -14,3 +14,8 @@ export const findImages = async ({ pageParam = 1 }) => {
     const response = await axios.get('/images', { params: { page: pageParam, limit } })
     return response.data
 }
+
+export const updateImage = async (imageId: string, name: string, tags: string[]) => {
+    const response = await axios.patch(`/images/${imageId}`, { name, tags })
+    return response.data
+}

@@ -12,4 +12,7 @@ export class ImageRepository implements IimageRepository {
         const totalCount = await imageModel.countDocuments({ userId })
         return { images, totalCount }
     }
+    async updateImage(imageId: string, name: string, tags: string[]): Promise<ImageEntity | null> {
+        return await imageModel.findByIdAndUpdate(imageId, { $set: { filename: name, tags } }, { new: true })
+    }
 }

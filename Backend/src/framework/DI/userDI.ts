@@ -4,10 +4,12 @@ import { SendOtpController } from "../../adapters/controllers/authentication/sig
 import { SignupController } from "../../adapters/controllers/authentication/signup/SignupController";
 import { CreateImageController } from "../../adapters/controllers/imageGallery/createImageController";
 import { FindImagesOfUserController } from "../../adapters/controllers/imageGallery/findImagesOfUser";
+import { updateImageController } from "../../adapters/controllers/imageGallery/updateImageController";
 import { ImageRepository } from "../../adapters/repository/imageRepository/imageRepository";
 import { UserRepository } from "../../adapters/repository/userRepository/userRepository";
 import { CreateImageUseCase } from "../../useCases/image/createImageUseCase";
 import { FindImagesOfUser } from "../../useCases/image/findImagesOfUser";
+import { UpdateImageUseCase } from "../../useCases/image/updateImageUseCase";
 import { RefreshTokenUseCase } from "../../useCases/userAuthentication/refreshTokenUseCase";
 import { SendOtpUseCase } from "../../useCases/userAuthentication/sendOtpUseCase";
 import { SignupUseCase } from "../../useCases/userAuthentication/signupUserUseCase";
@@ -47,3 +49,7 @@ export const injectedCreateImageController = new CreateImageController(createIma
 //---------------------------------------------find images ------------------------
 const findImagesOfUser = new FindImagesOfUser(imageRepository)
 export const injectedFindImagesOfUserController = new FindImagesOfUserController(findImagesOfUser)
+
+//-----------------------------------------------update Image ------------------------
+const updateImageUseCase = new UpdateImageUseCase(imageRepository)
+export const injectedUpdateImageController = new updateImageController(updateImageUseCase) 

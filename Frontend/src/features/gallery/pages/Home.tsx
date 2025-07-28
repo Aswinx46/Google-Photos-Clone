@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HomeLayout } from '../component/ImageLayout'
 import type { ImageEntity } from '@/types/images/ImageType'
 import type { ImageUploadPropsInterface } from '../interfaces/ImageUploadFunctionProps'

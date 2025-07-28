@@ -26,7 +26,7 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid-large")
-    const [selectedTags, setSelectedTags] = useState<string[]>([])
+    // const [selectedTags, setSelectedTags] = useState<string[]>([])
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [selectedFileUrl, setSelectedFileUrl] = useState<string>('')
     const [showImagePreview, setShowImagePreview] = useState<boolean>(false)
@@ -47,7 +47,6 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
     }
 
     const handleFullScreen = (imageUrl: string) => {
-        console.log('skdf')
         setSelectedImageUrl(imageUrl)
         setShowFullScreen(true)
         // alert()
