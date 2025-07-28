@@ -11,11 +11,11 @@ import { useDispatch } from 'react-redux'
 import { addKey } from '@/reduxstrore/slices/queryKeySlice'
 
 const LazyLoadedHome = React.lazy(() => import('../component/ImageLayout'))
+export interface ResponseType {
+    createdImage: ImageEntity
+}
 
 function Home() {
-    interface ResponseType {
-        createdImage: ImageEntity
-    }
     const queryClient = useQueryClient()
     const [name, setName] = useState<string>('')
     const [sort, setSort] = useState<"newest" | "oldest">("newest");
