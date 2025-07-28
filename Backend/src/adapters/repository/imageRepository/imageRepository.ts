@@ -1,3 +1,4 @@
+import { TimeGroupLabel, ImageDTO } from "../../../domain/entity/image/imageDTO";
 import { ImageEntity } from "../../../domain/entity/image/imageEntity";
 import { IimageRepository } from "../../../domain/interface/repositoryInterfaces/imageRepositoryInterface";
 import { imageModel } from "../../../framework/database/models/imageModel";
@@ -17,6 +18,15 @@ export class ImageRepository implements IimageRepository {
     }
     async deleteImage(imageId: string): Promise<ImageEntity | null> {
         return await imageModel.findByIdAndDelete(imageId)
-
+    }
+    async searchAndSorting(userId: string, page: number, limit: number, name?: string, sort?: string): Promise<{ images: ImageEntity[] | []; totalCount: number; }> {
+        const searchFilter = name ? {
+            userId: userId,
+            $or: [{ filename: { $regex: name, $options: 'i' } }, { tags: { $elemMatch: { $regex: name, $options: "i" } } }]
+        } : { userId }
+        const sortOrder = sort === 'oldest' ? 1 : -1
+        const images = await imageModel.find(searchFilter).sort({ createdAt: sortOrder }).skip((page - 1) * limit).limit(limit).lean()
+        const totalCount = await imageModel.countDocuments(searchFilter)
+        return { images, totalCount }
     }
 }

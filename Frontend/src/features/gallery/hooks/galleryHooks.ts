@@ -7,10 +7,13 @@ export const useUploadImage = () => {
     })
 }
 
-export const useFindImages = () => {
+export const useFindImages = ({ name, sort }: { name?: string, sort?: string }) => {
     return useInfiniteQuery({
-        queryKey: ['images'],
-        queryFn: findImages,
+        queryKey: ['images', name, sort],
+        queryFn: ({ pageParam = 1, queryKey }) => {
+            const [, name, sort] = queryKey; // destructure from queryKey
+            return findImages({ pageParam, name, sort });
+        },
         initialPageParam: 1,
         getNextPageParam: (lastpage, allPages) => {
             const fetchedSoFar = allPages.flatMap(p => p.images).length

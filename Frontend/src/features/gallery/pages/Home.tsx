@@ -6,14 +6,22 @@ import { useFindImages, useUploadImage } from '../hooks/galleryHooks'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '@/components/spinner/LoadingSpinner'
 import { useInView } from 'react-intersection-observer'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useDispatch } from 'react-redux'
+import { addKey } from '@/reduxstrore/slices/queryKeySlice'
 function Home() {
     interface ResponseType {
         createdImage: ImageEntity
     }
     const queryClient = useQueryClient()
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useFindImages()
+    const [name, setName] = useState<string>('')
+    const [sort, setSort] = useState<"newest" | "oldest">("newest");
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(addKey({ name, sort }))
+    }, [dispatch, name, sort])
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useFindImages({ name, sort })
     const groupedImages: Record<string, ImageEntity[]> = {}
     // console.log('this is the data from the backend',data)
     data?.pages.forEach(page => {
@@ -39,7 +47,7 @@ function Home() {
             onSuccess: (data) => {
                 const response: ResponseType = data
                 toast("Image Uploaded")
-                queryClient.setQueryData(['images'], (oldData: any) => {
+                queryClient.setQueryData(['images',name,sort], (oldData: any) => {
                     const cloneData = structuredClone(oldData);
                     cloneData.pages[0].images.Today.unshift(response.createdImage)
                     return cloneData
@@ -72,7 +80,7 @@ function Home() {
     return (
         <div>
             {uploadImage.isPending && <LoadingSpinner fullScreen={true} isOpen={uploadImage.isPending} />}
-            <HomeLayout images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage}/>
+            <HomeLayout images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage} />
         </div>
     )
 }

@@ -24,7 +24,7 @@ interface HomeLayoutProps {
 type ViewMode = "grid-large" | "grid-small" | "list"
 
 export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage }: HomeLayoutProps) {
-    console.log('hasnextpage in layour',hasNextPage)
+
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid-large")

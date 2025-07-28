@@ -13,6 +13,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import ConfirmModal from "@/components/confirmModal/ConfirmModal"
 import { formatDate } from "@/lib/utils"
 import { LoadingSpinner } from "@/components/spinner/LoadingSpinner"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/reduxstrore/store"
 interface ImageCardProps {
     image: ImageEntity
     index: number
@@ -22,6 +24,7 @@ interface ImageCardProps {
 
 export function ImageCard({ image, index, onImageClick, handleFullScreen }: ImageCardProps) {
     const deleteContent = `Are you sure you want to delete this image ${image.filename}? This action cannot be undone and all associated data will be permanently removed.`
+    const key = useSelector((state: RootState) => state.queryKey.key)
     const [isLoaded, setIsLoaded] = useState(false)
     const [openEditModal, setOpenEditModal] = useState<boolean>(false)
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
@@ -32,7 +35,7 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
         updateImageMutation.mutate({ imageId: image._id!, name: data.name, tags: data.tags }, {
             onSuccess: (data) => {
                 toast("Image Updated")
-                queryClient.setQueryData(['images'], (oldData: any) => {
+                queryClient.setQueryData(['images', key.name, key.sort], (oldData: any) => {
                     if (!oldData) return oldData
                     // console.log('this is the oldData',oldData)
                     const updatedPages = oldData.pages.map((page: any) => {
@@ -70,7 +73,7 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
         deleteImageMutation.mutate(image._id, {
             onSuccess: () => {
                 toast("Image Deleted")
-                queryClient.setQueryData(['images'], (oldData: any) => {
+                queryClient.setQueryData(['images', key.name, key.sort], (oldData: any) => {
                     if (!oldData) return oldData
                     // console.log('this is the oldData',oldData)
                     const updatedPages = oldData.pages.map((page: any) => {

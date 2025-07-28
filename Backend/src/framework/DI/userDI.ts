@@ -5,12 +5,14 @@ import { SignupController } from "../../adapters/controllers/authentication/sign
 import { CreateImageController } from "../../adapters/controllers/imageGallery/createImageController";
 import { DeleteImageController } from "../../adapters/controllers/imageGallery/deleteImageController";
 import { FindImagesOfUserController } from "../../adapters/controllers/imageGallery/findImagesOfUser";
+import { FindImageSearchAndSortController } from "../../adapters/controllers/imageGallery/findImagesSearchAndSort";
 import { updateImageController } from "../../adapters/controllers/imageGallery/updateImageController";
 import { ImageRepository } from "../../adapters/repository/imageRepository/imageRepository";
 import { UserRepository } from "../../adapters/repository/userRepository/userRepository";
 import { CreateImageUseCase } from "../../useCases/image/createImageUseCase";
 import { DeleteImageUseCase } from "../../useCases/image/deleteImageUseCase";
 import { FindImagesOfUser } from "../../useCases/image/findImagesOfUser";
+import { FindImagesSearchAndSort } from "../../useCases/image/findImagesSearchAndSort";
 import { UpdateImageUseCase } from "../../useCases/image/updateImageUseCase";
 import { RefreshTokenUseCase } from "../../useCases/userAuthentication/refreshTokenUseCase";
 import { SendOtpUseCase } from "../../useCases/userAuthentication/sendOtpUseCase";
@@ -59,3 +61,7 @@ export const injectedUpdateImageController = new updateImageController(updateIma
 //-------------------------------------Delete Image ---------------------------
 const deleteImageUseCase = new DeleteImageUseCase(imageRepository)
 export const injectedDeleteImageController = new DeleteImageController(deleteImageUseCase)
+
+//------------------------------------- findIMagesbasedOnsortingandSearch-------------------
+const findImageBasedOnSearchAndSortUseCase = new FindImagesSearchAndSort(imageRepository)
+export const injectedImageBasedOnSearchAndSort = new FindImageSearchAndSortController(findImageBasedOnSearchAndSortUseCase) 
