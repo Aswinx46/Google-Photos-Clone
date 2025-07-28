@@ -78,4 +78,4 @@ jobs:
         if: always()
         run: |
           git config --global --unset-all http.https://github.com/.extraheader || true
-          git config --global --unset-all core.sshCommand || true
+          git config --global --unset-all core.sshCommand || trueadded
