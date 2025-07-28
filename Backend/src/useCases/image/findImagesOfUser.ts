@@ -1,12 +1,13 @@
-import { ImageDTO } from "../../domain/entity/image/imageDTO";
+import { ImageDTO, TimeGroupLabel } from "../../domain/entity/image/imageDTO";
 import { IimageRepository } from "../../domain/interface/repositoryInterfaces/imageRepositoryInterface";
 import { IfindImagesOfUser } from "../../domain/interface/useCaseInterfaces/image/findImagesUseCase";
 import { generateSignedImageUrl } from "../../framework/services/cloudinaryService";
+import { groupImagesByDate } from "../../framework/utils/groupImageUtil";
 import { ImageMapper } from "../mappers/image/imageMapper";
 
 export class FindImagesOfUser implements IfindImagesOfUser {
     constructor(private ImageRepository: IimageRepository) { }
-    async findImages(userId: string, page: number, limit: number): Promise<{ images: ImageDTO[] | [], totalCount: number }> {
+    async findImages(userId: string, page: number, limit: number): Promise<{ images: Record<TimeGroupLabel, ImageDTO[]> | [], totalCount: number }> {
         const { images, totalCount } = await this.ImageRepository.findImagesOfUser(userId, page, limit)
         if (images && images.length === 0) return { images: [], totalCount: 0 }
 
@@ -19,10 +20,11 @@ export class FindImagesOfUser implements IfindImagesOfUser {
                 }
             })
         )
-       
+
         const mappedImages = await Promise.all(
             imagesWithSignedUrl.map((item) => ImageMapper.toDTO(item))
         )
-        return { images: mappedImages, totalCount }
+
+        return { images: groupImagesByDate(mappedImages), totalCount }
     }
 }

@@ -34,22 +34,27 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
                 toast("Image Updated")
                 queryClient.setQueryData(['images'], (oldData: any) => {
                     if (!oldData) return oldData
-                    const updatedPages = [...oldData.pages]
-                    let index = -1
-                    for (let i = 0; i < updatedPages.length; i++) {
-                        if (updatedPages[i].images.some((img: ImageEntity) => img._id === image._id)) {
-                            index = i
-                            break
+                    // console.log('this is the oldData',oldData)
+                    const updatedPages = oldData.pages.map((page: any) => {
+                        const updatedGroups: Record<string, ImageEntity[]> = {}
+
+                        for (const groupLabel in page.images) {
+                            const groupImages = page.images[groupLabel].map((img: ImageEntity) =>
+                                img._id === data.updatedImage._id ? data.updatedImage : img
+                            )
+                            updatedGroups[groupLabel] = groupImages
                         }
 
+                        return {
+                            ...page,
+                            images: updatedGroups,
+                        }
+                    })
+
+                    return {
+                        ...oldData,
+                        pages: updatedPages,
                     }
-                    if (index === -1) return oldData
-                    const filteredImages = updatedPages[index].images.filter((item: ImageEntity) => item._id !== image._id)
-                    updatedPages[index] = {
-                        ...updatedPages[index],
-                        images: [data.updatedImage, ...filteredImages],
-                    }
-                    return { ...oldData, pages: updatedPages }
                 })
             },
             onError: (err) => {
@@ -67,22 +72,27 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
                 toast("Image Deleted")
                 queryClient.setQueryData(['images'], (oldData: any) => {
                     if (!oldData) return oldData
-                    const updatedPages = [...oldData.pages]
-                    let index = -1
-                    for (let i = 0; i < updatedPages.length; i++) {
-                        if (updatedPages[i].images.some((img: ImageEntity) => img._id === image._id)) {
-                            index = i
-                            break
+                    // console.log('this is the oldData',oldData)
+                    const updatedPages = oldData.pages.map((page: any) => {
+                        const updatedGroups: Record<string, ImageEntity[]> = {}
+
+                        for (const groupLabel in page.images) {
+                            const groupImages = page.images[groupLabel].filter((img: ImageEntity) =>
+                                img._id !== image._id
+                            )
+                            updatedGroups[groupLabel] = groupImages
                         }
 
+                        return {
+                            ...page,
+                            images: updatedGroups,
+                        }
+                    })
+
+                    return {
+                        ...oldData,
+                        pages: updatedPages,
                     }
-                    if (index === -1) return oldData
-                    const filteredImages = updatedPages[index].images.filter((item: ImageEntity) => item._id !== image._id)
-                    updatedPages[index] = {
-                        ...updatedPages[index],
-                        images: [...filteredImages],
-                    }
-                    return { ...oldData, pages: updatedPages }
                 })
             },
             onError: (err) => {
@@ -102,7 +112,7 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
 
     return (
         <>
-            {deleteImageMutation.isPending && <LoadingSpinner fullScreen={true} isOpen={deleteImageMutation.isPending}/>}
+            {deleteImageMutation.isPending && <LoadingSpinner fullScreen={true} isOpen={deleteImageMutation.isPending} />}
             {showDeleteModal && <ConfirmModal content={deleteContent} isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} onConfirm={handleDeleteImage} />}
             {openEditModal && <ImageEditModal imageUrl={image.url} isOpen={openEditModal} onClose={() => setOpenEditModal(false)} onSave={handleEditImage} initialName={image.filename} initialTags={image.tags} />}
             <motion.div

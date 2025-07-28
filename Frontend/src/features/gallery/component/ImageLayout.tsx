@@ -13,16 +13,18 @@ import { toast } from "sonner"
 import FullViewImage from "./FullViewImage"
 
 interface HomeLayoutProps {
-    images: ImageEntity[] | []
+    images: Record<string, ImageEntity[]>
     isLoading?: boolean
     onUpload: (image: ImageUploadPropsInterface) => void
     ref: (node?: Element | null) => void
-    isFetchingNextPage: boolean
+    isFetchingNextPage: boolean,
+    hasNextPage: boolean
 }
 
 type ViewMode = "grid-large" | "grid-small" | "list"
 
-export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage }: HomeLayoutProps) {
+export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage }: HomeLayoutProps) {
+    console.log('hasnextpage in layour',hasNextPage)
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid-large")
@@ -88,7 +90,7 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
                 <div className="max-w-7xl mx-auto">
                     {/* Loading Header */}
-              
+
 
                     <div className="mb-8">
                         <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-48 mb-4 animate-pulse" />
@@ -181,18 +183,32 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
 
                 </motion.div>
 
-       
+
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className={`grid ${getGridClasses()}`}
+                // className={`grid ${getGridClasses()}`}
                 >
-                    {images?.map((image, index) => (
-                        <ImageCard key={String(image._id)} image={image} index={index} onImageClick={setSelectedImage} handleFullScreen={handleFullScreen} />
+                    {Object.entries(images).map(([groupLabel, groupImages]) => (
+                        <div key={groupLabel} className="mb-10">
+                            {/* <p>{`${groupLabel} : ${ JSON.stringify(groupImages) }}`}</p> */}
+                            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">{groupLabel}</h2>
+                            <div className={`grid ${getGridClasses()}`}>
+                                {groupImages.map((image, index) => (
+                                    <ImageCard
+                                        key={String(image._id)}
+                                        image={image}
+                                        index={index}
+                                        onImageClick={setSelectedImage}
+                                        handleFullScreen={handleFullScreen}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     ))}
                 </motion.div>
-                {images.length > 0 && (
+                {hasNextPage && (
                     <div ref={ref} style={{ height: '1px' }}>
                         {isFetchingNextPage && <p>Loading more...</p>}
                     </div>

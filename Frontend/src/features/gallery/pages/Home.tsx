@@ -9,13 +9,26 @@ import { useInView } from 'react-intersection-observer'
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 function Home() {
-    // const images
     interface ResponseType {
         createdImage: ImageEntity
     }
     const queryClient = useQueryClient()
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useFindImages()
-    const images = data?.pages.flatMap(page => page.images) || []
+    const groupedImages: Record<string, ImageEntity[]> = {}
+    // console.log('this is the data from the backend',data)
+    data?.pages.forEach(page => {
+        const { images } = page
+
+        Object.entries(images).forEach(([groupLabel, groupImages]) => {
+            if (!Array.isArray(groupImages)) return
+
+            if (!groupedImages[groupLabel]) {
+                groupedImages[groupLabel] = []
+            }
+
+            groupedImages[groupLabel].push(...groupImages)
+        })
+    })
     const { ref, inView } = useInView()
     const uploadImage = useUploadImage()
     const handleImageUpload = (image: ImageUploadPropsInterface) => {
@@ -27,14 +40,9 @@ function Home() {
                 const response: ResponseType = data
                 toast("Image Uploaded")
                 queryClient.setQueryData(['images'], (oldData: any) => {
-                    if (!oldData) return oldData
-                    const updatedPages = [...oldData.pages]
-                    updatedPages[0] = {
-                        ...updatedPages[0],
-                        images: [response.createdImage, ...updatedPages[0].images],
-                    }
-                    return { ...oldData, pages: updatedPages }
-
+                    const cloneData = structuredClone(oldData);
+                    cloneData.pages[0].images.Today.unshift(response.createdImage)
+                    return cloneData
                 })
             },
             onError: (err) => {
@@ -64,7 +72,7 @@ function Home() {
     return (
         <div>
             {uploadImage.isPending && <LoadingSpinner fullScreen={true} isOpen={uploadImage.isPending} />}
-            <HomeLayout images={images} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} />
+            <HomeLayout images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage}/>
         </div>
     )
 }

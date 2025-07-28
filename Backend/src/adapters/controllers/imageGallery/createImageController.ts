@@ -12,7 +12,7 @@ export class CreateImageController {
             const userId = (req as any).user.userId
             const parsedTags = typeof tags === 'string' ? tags.split(',').map(tag => tag.trim()) : tags;
             if (!file) {
-                res.status(HttpStatus.BAD_REQUEST).json({ message: "No image file provided" })
+                res.status(HttpStatus.BAD_REQUEST).json({ error: "No image file provided" })
                 return
             }
             const imageData: ImageBufferType = {
