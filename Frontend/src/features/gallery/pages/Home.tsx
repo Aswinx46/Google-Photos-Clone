@@ -6,10 +6,13 @@ import { useFindImages, useUploadImage } from '../hooks/galleryHooks'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '@/components/spinner/LoadingSpinner'
 import { useInView } from 'react-intersection-observer'
-import { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 import { addKey } from '@/reduxstrore/slices/queryKeySlice'
+
+const LazyLoadedHome = React.lazy(() => import('../component/ImageLayout'))
+
 function Home() {
     interface ResponseType {
         createdImage: ImageEntity
@@ -79,7 +82,9 @@ function Home() {
     return (
         <div>
             {uploadImage.isPending && <LoadingSpinner fullScreen={true} isOpen={uploadImage.isPending} />}
-            <HomeLayout images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage} setName={setName} setSort={setSort} />
+            <Suspense fallback={<LoadingSpinner fullScreen={true} />}>
+                <LazyLoadedHome images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage} setName={setName} setSort={setSort} />
+            </Suspense>
         </div>
     )
 }
