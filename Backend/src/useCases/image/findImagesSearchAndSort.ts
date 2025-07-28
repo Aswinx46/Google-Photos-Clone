@@ -19,11 +19,9 @@ export class FindImagesSearchAndSort implements IfindImagesSearchAndSort {
                 }
             })
         )
-        console.log('brefore mapping',imagesWithSignedUrl)
         const mappedImages = await Promise.all(
             imagesWithSignedUrl.map((item) => ImageMapper.toDTO(item))
         )
-        console.log('this is after mapping',mappedImages)
 
         return { images: groupImagesByDate(mappedImages), totalCount }
     }

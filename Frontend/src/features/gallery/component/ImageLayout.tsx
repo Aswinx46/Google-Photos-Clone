@@ -18,17 +18,20 @@ interface HomeLayoutProps {
     onUpload: (image: ImageUploadPropsInterface) => void
     ref: (node?: Element | null) => void
     isFetchingNextPage: boolean,
-    hasNextPage: boolean
+    hasNextPage: boolean,
+    setName: React.Dispatch<React.SetStateAction<string>>,
+    setSort: React.Dispatch<React.SetStateAction<"newest" | "oldest">>
 }
 
 type ViewMode = "grid-large" | "grid-small" | "list"
 
-export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage }: HomeLayoutProps) {
-
+export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchingNextPage, hasNextPage, setName, setSort }: HomeLayoutProps) {
+    const sortOptions = ["newest", "oldest"] as const;
+    const [showSortOptions, setShowSortOptions] = useState<boolean>(false)
     const [selectedImage, setSelectedImage] = useState<ImageEntity | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [viewMode, setViewMode] = useState<ViewMode>("grid-large")
-    // const [selectedTags, setSelectedTags] = useState<string[]>([])
+
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [selectedFileUrl, setSelectedFileUrl] = useState<string>('')
     const [showImagePreview, setShowImagePreview] = useState<boolean>(false)
@@ -180,7 +183,23 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
                             </Button>
                         </div>
                     </div>
-
+                    <Button onClick={() => setShowSortOptions(!showSortOptions)}>SORT</Button>
+                    {showSortOptions && (
+                        <div className="z-50 bg-white border rounded-lg shadow-lg w-40 p-2 space-y-1">
+                            {sortOptions.map((item) => (
+                                <p
+                                    key={item}
+                                    className="cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                    onClick={() => {
+                                        setSort(item)
+                                        setShowSortOptions(!showSortOptions)
+                                    }}
+                                >
+                                    {item.toUpperCase()}
+                                </p>
+                            ))}
+                        </div>
+                    )}
                 </motion.div>
 
 

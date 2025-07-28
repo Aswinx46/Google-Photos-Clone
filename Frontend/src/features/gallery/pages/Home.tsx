@@ -47,7 +47,7 @@ function Home() {
             onSuccess: (data) => {
                 const response: ResponseType = data
                 toast("Image Uploaded")
-                queryClient.setQueryData(['images',name,sort], (oldData: any) => {
+                queryClient.setQueryData(['images', name, sort], (oldData: any) => {
                     const cloneData = structuredClone(oldData);
                     cloneData.pages[0].images.Today.unshift(response.createdImage)
                     return cloneData
@@ -80,7 +80,7 @@ function Home() {
     return (
         <div>
             {uploadImage.isPending && <LoadingSpinner fullScreen={true} isOpen={uploadImage.isPending} />}
-            <HomeLayout images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage} />
+            <HomeLayout images={groupedImages} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} hasNextPage={hasNextPage} setName={setName} setSort={setSort} />
         </div>
     )
 }
