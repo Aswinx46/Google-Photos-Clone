@@ -1,20 +1,24 @@
-import { motion } from 'framer-motion';
+'use client';
+
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
   fullScreen?: boolean;
   message?: string;
+  isOpen?: boolean; // to control visibility
 }
 
-export const LoadingSpinner = ({ 
-  size = 'md', 
+export const LoadingSpinner = ({
+  size = 'md',
   fullScreen = false,
-  message 
+  message,
+  isOpen = true,
 }: LoadingSpinnerProps) => {
   const sizeClasses = {
     sm: 'w-6 h-6',
-    md: 'w-8 h-8', 
-    lg: 'w-12 h-12'
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12',
   };
 
   const spinner = (
@@ -25,12 +29,12 @@ export const LoadingSpinner = ({
         transition={{
           duration: 1,
           repeat: Infinity,
-          ease: "linear"
+          ease: 'linear',
         }}
       />
       {message && (
-        <motion.p 
-          className="text-sm text-muted-foreground"
+        <motion.p
+          className="text-sm text-muted-foreground text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -41,18 +45,22 @@ export const LoadingSpinner = ({
     </div>
   );
 
-  if (fullScreen) {
-    return (
-      <motion.div 
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {spinner}
-      </motion.div>
-    );
-  }
+  if (!fullScreen) return spinner;
 
-  return spinner;
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+        >
+          {spinner}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };

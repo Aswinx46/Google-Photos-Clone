@@ -7,7 +7,6 @@ import { ImageMapper } from "../mappers/image/imageMapper";
 export class UpdateImageUseCase implements IupdateImageUseCaseInterface {
     constructor(private imageRepository: IimageRepository) { }
     async execute(imageId: string, name: string, tags: string[]): Promise<ImageDTO> {
-        console.log('this is the tags',tags)
         const updatedImage = await this.imageRepository.updateImage(imageId, name, tags)
         if (!updatedImage) throw new Error("No image found in this ID")
 

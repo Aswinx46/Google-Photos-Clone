@@ -19,3 +19,8 @@ export const updateImage = async (imageId: string, name: string, tags: string[])
     const response = await axios.patch(`/images/${imageId}`, { name, tags })
     return response.data
 }
+
+export const deleteImage = async (imageId: string) => {
+    const response = await axios.delete(`/images/${imageId}`)
+    return response.data
+}

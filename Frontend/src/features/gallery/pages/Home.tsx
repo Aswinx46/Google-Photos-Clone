@@ -34,7 +34,7 @@ function Home() {
                         images: [response.createdImage, ...updatedPages[0].images],
                     }
                     return { ...oldData, pages: updatedPages }
-                   
+
                 })
             },
             onError: (err) => {
@@ -63,7 +63,7 @@ function Home() {
 
     return (
         <div>
-            {uploadImage.isPending && <LoadingSpinner />}
+            {uploadImage.isPending && <LoadingSpinner fullScreen={true} isOpen={uploadImage.isPending} />}
             <HomeLayout images={images} isLoading={false} onUpload={handleImageUpload} ref={ref} isFetchingNextPage={isFetchingNextPage} />
         </div>
     )

@@ -69,27 +69,6 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
         }
     }
 
-    // Filter images based on search query and tags
-    // const filteredImages = useMemo(() => {
-    //     return images.filter((image) => {
-    //         const matchesSearch =
-    //             image.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    //             image.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-
-    //         const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => image.tags.includes(tag))
-
-    //         return matchesSearch && matchesTags
-    //     })
-    // }, [images, searchQuery, selectedTags])
-
-    // Get all unique tags
-    // const allTags = useMemo(() => {
-    //     const tags = new Set<string>()
-    //     images.forEach((image) => {
-    //         image.tags.forEach((tag) => tags.add(tag))
-    //     })
-    //     return Array.from(tags)
-    // }, [images])
 
     const getGridClasses = () => {
         switch (viewMode) {
@@ -200,51 +179,9 @@ export function HomeLayout({ images, isLoading = false, onUpload, ref, isFetchin
                         </div>
                     </div>
 
-                    {/* Tags Filter */}
-                    {/* {allTags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                                <Filter className="w-4 h-4" />
-                                Filter by tags:
-                            </span>
-                            {allTags.slice(0, 10).map((tag) => (
-                                <Button
-                                    key={tag}
-                                    variant={selectedTags.includes(tag) ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => {
-                                        setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
-                                    }}
-                                    className="text-xs"
-                                >
-                                    {tag}
-                                </Button>
-                            ))}
-                        </div>
-                    )} */}
                 </motion.div>
 
-                {/* Images Grid */}
-                {/* <AnimatePresence mode="wait"> */}
-                {/* {filteredImages.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="text-center py-16"
-                        >
-                            <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                                <Search className="w-8 h-8 text-gray-400" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No photos found</h3>
-                            <p className="text-gray-600 dark:text-gray-400">
-                                {searchQuery || selectedTags.length > 0
-                                    ? "Try adjusting your search or filters"
-                                    : "Upload some photos to get started"}
-                            </p>
-                        </motion.div>
-                    ) : (
-                        )} */}
+       
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

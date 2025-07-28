@@ -4,12 +4,15 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import type { ImageEntity } from "@/types/images/ImageType"
-import { Calendar, MapPin, Tag, Fullscreen, Pen, Album } from "lucide-react"
+import { Calendar, MapPin, Tag, Fullscreen, Pen, Album, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ImageEditModal from "./updateImage"
-import { useUpdateImage } from "../hooks/galleryHooks"
+import { useDeleteImage, useUpdateImage } from "../hooks/galleryHooks"
 import { toast } from "sonner"
 import { useQueryClient } from '@tanstack/react-query'
+import ConfirmModal from "@/components/confirmModal/ConfirmModal"
+import { formatDate } from "@/lib/utils"
+import { LoadingSpinner } from "@/components/spinner/LoadingSpinner"
 interface ImageCardProps {
     image: ImageEntity
     index: number
@@ -18,20 +21,20 @@ interface ImageCardProps {
 }
 
 export function ImageCard({ image, index, onImageClick, handleFullScreen }: ImageCardProps) {
+    const deleteContent = `Are you sure you want to delete this image ${image.filename}? This action cannot be undone and all associated data will be permanently removed.`
     const [isLoaded, setIsLoaded] = useState(false)
     const [openEditModal, setOpenEditModal] = useState<boolean>(false)
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
     const updateImageMutation = useUpdateImage()
     const queryClient = useQueryClient()
+    const deleteImageMutation = useDeleteImage()
     const handleEditImage = (data: { name: string; tags: string[] }) => {
-        console.log('this is the data from the updateimage modal', data)
         updateImageMutation.mutate({ imageId: image._id!, name: data.name, tags: data.tags }, {
             onSuccess: (data) => {
                 toast("Image Updated")
                 queryClient.setQueryData(['images'], (oldData: any) => {
                     if (!oldData) return oldData
-                    console.log('This is the oldData', oldData)
                     const updatedPages = [...oldData.pages]
-                    console.log("this is the updatedPages", updatedPages)
                     let index = -1
                     for (let i = 0; i < updatedPages.length; i++) {
                         if (updatedPages[i].images.some((img: ImageEntity) => img._id === image._id)) {
@@ -46,7 +49,6 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
                         ...updatedPages[index],
                         images: [data.updatedImage, ...filteredImages],
                     }
-                    console.log('after updation updatedImages', { ...oldData, pages: updatedPages })
                     return { ...oldData, pages: updatedPages }
                 })
             },
@@ -58,6 +60,37 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
         })
 
     }
+    const handleDeleteImage = () => {
+        if (!image || !image._id) return
+        deleteImageMutation.mutate(image._id, {
+            onSuccess: () => {
+                toast("Image Deleted")
+                queryClient.setQueryData(['images'], (oldData: any) => {
+                    if (!oldData) return oldData
+                    const updatedPages = [...oldData.pages]
+                    let index = -1
+                    for (let i = 0; i < updatedPages.length; i++) {
+                        if (updatedPages[i].images.some((img: ImageEntity) => img._id === image._id)) {
+                            index = i
+                            break
+                        }
+
+                    }
+                    if (index === -1) return oldData
+                    const filteredImages = updatedPages[index].images.filter((item: ImageEntity) => item._id !== image._id)
+                    updatedPages[index] = {
+                        ...updatedPages[index],
+                        images: [...filteredImages],
+                    }
+                    return { ...oldData, pages: updatedPages }
+                })
+            },
+            onError: (err) => {
+                toast(err.message)
+                console.log('error while deleting image', err)
+            }
+        })
+    }
     const formatFileSize = (bytes: number): string => {
         if (bytes === 0) return "0 Bytes"
         const k = 1024
@@ -66,16 +99,11 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
         return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
     }
 
-    const formatDate = (date: Date): string => {
-        return new Date(date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        })
-    }
 
     return (
         <>
+            {deleteImageMutation.isPending && <LoadingSpinner fullScreen={true} isOpen={deleteImageMutation.isPending}/>}
+            {showDeleteModal && <ConfirmModal content={deleteContent} isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} onConfirm={handleDeleteImage} />}
             {openEditModal && <ImageEditModal imageUrl={image.url} isOpen={openEditModal} onClose={() => setOpenEditModal(false)} onSave={handleEditImage} initialName={image.filename} initialTags={image.tags} />}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -135,6 +163,20 @@ export function ImageCard({ image, index, onImageClick, handleFullScreen }: Imag
                                 }}
                             >
                                 <Pen className="w-4 h-4" />
+                            </Button>
+                        </motion.div>
+
+                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setShowDeleteModal(true)
+                                }}
+                            >
+                                <Trash className="w-4 h-4" />
                             </Button>
                         </motion.div>
 

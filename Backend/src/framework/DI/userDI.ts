@@ -3,11 +3,13 @@ import { RefreshTokenController } from "../../adapters/controllers/authenticatio
 import { SendOtpController } from "../../adapters/controllers/authentication/signup/sendOtpController";
 import { SignupController } from "../../adapters/controllers/authentication/signup/SignupController";
 import { CreateImageController } from "../../adapters/controllers/imageGallery/createImageController";
+import { DeleteImageController } from "../../adapters/controllers/imageGallery/deleteImageController";
 import { FindImagesOfUserController } from "../../adapters/controllers/imageGallery/findImagesOfUser";
 import { updateImageController } from "../../adapters/controllers/imageGallery/updateImageController";
 import { ImageRepository } from "../../adapters/repository/imageRepository/imageRepository";
 import { UserRepository } from "../../adapters/repository/userRepository/userRepository";
 import { CreateImageUseCase } from "../../useCases/image/createImageUseCase";
+import { DeleteImageUseCase } from "../../useCases/image/deleteImageUseCase";
 import { FindImagesOfUser } from "../../useCases/image/findImagesOfUser";
 import { UpdateImageUseCase } from "../../useCases/image/updateImageUseCase";
 import { RefreshTokenUseCase } from "../../useCases/userAuthentication/refreshTokenUseCase";
@@ -52,4 +54,8 @@ export const injectedFindImagesOfUserController = new FindImagesOfUserController
 
 //-----------------------------------------------update Image ------------------------
 const updateImageUseCase = new UpdateImageUseCase(imageRepository)
-export const injectedUpdateImageController = new updateImageController(updateImageUseCase) 
+export const injectedUpdateImageController = new updateImageController(updateImageUseCase)
+
+//-------------------------------------Delete Image ---------------------------
+const deleteImageUseCase = new DeleteImageUseCase(imageRepository)
+export const injectedDeleteImageController = new DeleteImageController(deleteImageUseCase)

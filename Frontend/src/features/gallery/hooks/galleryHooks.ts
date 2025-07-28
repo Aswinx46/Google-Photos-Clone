@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { createImage, findImages, updateImage } from "../services/galleryService";
+import { createImage, deleteImage, findImages, updateImage } from "../services/galleryService";
 
 export const useUploadImage = () => {
     return useMutation({
@@ -22,5 +22,11 @@ export const useFindImages = () => {
 export const useUpdateImage = () => {
     return useMutation({
         mutationFn: ({ imageId, name, tags }: { imageId: string, name: string, tags: string[] }) => updateImage(imageId, name, tags)
+    })
+}
+
+export const useDeleteImage = () => {
+    return useMutation({
+        mutationFn: (imageId: string) => deleteImage(imageId)
     })
 }

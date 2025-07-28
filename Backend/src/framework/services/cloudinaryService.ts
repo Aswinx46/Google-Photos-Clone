@@ -48,6 +48,17 @@ export const generateSignedImageUrl = (publicId: string): string => {
         sign_url: true,
         secure: true,
         expires_at: Math.floor(Date.now() / 1000) + 60 * 55,
-        
+
     })
+}
+
+export const deleteImageFromCloudinary = async (publicId: string) => {
+    try {
+        const result = await cloudinary.uploader.destroy(publicId)
+        console.log("Image deleted from cloudinary", result)
+        return result
+    } catch (error) {
+        console.log('error while deleting image from the cloudinary', error)
+        throw error
+    }
 }

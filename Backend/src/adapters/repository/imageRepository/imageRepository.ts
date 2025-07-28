@@ -15,4 +15,8 @@ export class ImageRepository implements IimageRepository {
     async updateImage(imageId: string, name: string, tags: string[]): Promise<ImageEntity | null> {
         return await imageModel.findByIdAndUpdate(imageId, { $set: { filename: name, tags } }, { new: true })
     }
+    async deleteImage(imageId: string): Promise<ImageEntity | null> {
+        return await imageModel.findByIdAndDelete(imageId)
+
+    }
 }
