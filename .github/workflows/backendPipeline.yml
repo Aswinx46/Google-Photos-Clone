@@ -19,7 +19,6 @@ jobs:
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v2
 
-        
       - name: Mark repo as safe
         run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
@@ -73,9 +72,8 @@ jobs:
             echo "Rebuilding and Starting Containers..."
             sudo docker compose up -d --build
 
-     
       - name: Manual Git cleanup (optional)
         if: always()
         run: |
           git config --global --unset-all http.https://github.com/.extraheader || true
-          git config --global --unset-all core.sshCommand || trueadded
+          git config --global --unset-all core.sshCommand || true
