@@ -40,7 +40,7 @@ jobs:
           key: ${{secrets.EC2_SSH_PRIVATE_KEY}}
           script: |
             echo "Creating ENV..."
-            cat <<EOF > /home/ubuntu/Event-Management-Gathergo/Backend/.env
+            cat <<EOF > /home/ubuntu/Google-Photos-Clone/Backend/.env
             PORT=${{secrets.PORT}}
             ORIGIN=${{secrets.ORIGIN}}
             MONGODB=${{secrets.MONGODB}}
@@ -60,7 +60,7 @@ jobs:
             docker pull ${{secrets.DOCKER_USERNAME}}/backend:latest
 
             echo "Stopping and Removing Old Containers..."
-            cd /home/ubuntu/Event-Management-Gathergo
+            cd /home/ubuntu/Google-Photos-Clone/Backend
             sudo docker compose down
 
             echo "Clearing Docker Builder Cache..."
