@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { LoadingSpinner } from '@/components/spinner/LoadingSpinner'
 import { useInView } from 'react-intersection-observer'
 import React, { Suspense, useEffect, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+// import { useQueryClient } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 import { addKey } from '@/reduxstrore/slices/queryKeySlice'
 
@@ -16,7 +16,7 @@ export interface ResponseType {
 }
 
 function Home() {
-    const queryClient = useQueryClient()
+    // const queryClient = useQueryClient()
     const [name, setName] = useState<string>('')
     const [sort, setSort] = useState<"newest" | "oldest">("newest");
     const dispatch = useDispatch()
@@ -45,8 +45,8 @@ function Home() {
         formData.append('file', image.image)
         formData.append('tags', JSON.stringify(image.tags))
         uploadImage.mutate(formData, {
-            onSuccess: (data) => {
-                const response: ResponseType = data
+            onSuccess: () => {
+                // const response: ResponseType = data
                 toast("Image Uploaded")
                 // queryClient.setQueryData(['images', name, sort], (oldData: any) => {
                 //     const cloneData = structuredClone(oldData);
