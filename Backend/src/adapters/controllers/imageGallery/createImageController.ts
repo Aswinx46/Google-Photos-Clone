@@ -10,7 +10,8 @@ export class CreateImageController {
             const file = req.file
             const { tags } = req.body
             const userId = (req as any).user.userId
-            const parsedTags = typeof tags === 'string' ? tags.split(',').map(tag => tag.trim()) : tags;
+            const parses = JSON.parse(tags)
+            const parsedTags = parses.map((tag: string) => tag.trim());
             if (!file) {
                 res.status(HttpStatus.BAD_REQUEST).json({ error: "No image file provided" })
                 return
