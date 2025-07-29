@@ -48,11 +48,13 @@ function Home() {
             onSuccess: (data) => {
                 const response: ResponseType = data
                 toast("Image Uploaded")
-                queryClient.setQueryData(['images', name, sort], (oldData: any) => {
-                    const cloneData = structuredClone(oldData);
-                    cloneData.pages[0].images.Today.unshift(response.createdImage)
-                    return cloneData
-                })
+                // queryClient.setQueryData(['images', name, sort], (oldData: any) => {
+                //     const cloneData = structuredClone(oldData);
+                //     console.log('this is the cloneData',cloneData)
+                //     cloneData.pages[0].images.Today.unshift(response.createdImage)
+                //     return cloneData
+                // })
+                refetch()
             },
             onError: (err) => {
                 toast(err.message)
